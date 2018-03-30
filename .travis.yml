@@ -14,13 +14,13 @@ env:
             DESTINATION="arch=x86_64" SDK="$OSX_SDK" SCHEME="$SCHEME"
             RUN_TESTS="YES" BUILD_EXAMPLE="NO" POD_LINT="NO"
         - >-
-            DESTINATION="OS=11.0,name=iPhone 7" SDK="$IOS_SDK" SCHEME="$SCHEME"
+            DESTINATION="OS=11.3,name=iPhone 7" SDK="$IOS_SDK" SCHEME="$SCHEME"
             RUN_TESTS="YES" BUILD_EXAMPLE="YES" POD_LINT="YES"
         - >-
-            DESTINATION="OS=11.0,name=Apple TV 1080p" SDK="$TVOS_SDK"
+            DESTINATION="OS=11.3,name=Apple TV 1080p" SDK="$TVOS_SDK"
             SCHEME="$SCHEME" RUN_TESTS="NO" BUILD_EXAMPLE="NO" POD_LINT="NO"
         - >-
-            DESTINATION="OS=4.0,name=Apple Watch - 42mm" SDK="$WATCHOS_SDK"
+            DESTINATION="OS=4.3,name=Apple Watch - 42mm" SDK="$WATCHOS_SDK"
             SCHEME="$SCHEME" RUN_TESTS="NO" BUILD_EXAMPLE="NO" POD_LINT="NO"
 script:
     - set -o pipefail
