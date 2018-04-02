@@ -5,10 +5,10 @@ env:
         - LANG=en_US.UTF-8
         - PROJECT="Differ.xcodeproj"
         - SCHEME="Differ"
-        - IOS_SDK=iphonesimulator11.0
+        - IOS_SDK=iphonesimulator11.3
         - OSX_SDK=macosx10.13
-        - TVOS_SDK=appletvsimulator11.0
-        - WATCHOS_SDK=watchsimulator4.0
+        - TVOS_SDK=appletvsimulator11.3
+        - WATCHOS_SDK=watchsimulator4.3
     matrix:
         - >-
             DESTINATION="arch=x86_64" SDK="$OSX_SDK" SCHEME="$SCHEME"
