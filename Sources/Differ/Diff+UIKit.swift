@@ -3,9 +3,14 @@
     import UIKit
 
     public struct BatchUpdate {
+        public struct MoveStep: Equatable {
+            let from: IndexPath
+            let to: IndexPath
+        }
+
         public let deletions: [IndexPath]
         public let insertions: [IndexPath]
-        public let moves: [(from: IndexPath, to: IndexPath)]
+        public let moves: [MoveStep]
 
         public init(
             diff: ExtendedDiff,
@@ -25,10 +30,10 @@
                 default: return nil
                 }
             }
-            moves = diff.compactMap { element -> (IndexPath, IndexPath)? in
+            moves = diff.compactMap { element -> MoveStep? in
                 switch element {
                 case let .move(from, to):
-                    return (indexPathTransform(IndexPath(row: from, section: 0)), indexPathTransform(IndexPath(row: to, section: 0)))
+                    return MoveStep(from: indexPathTransform(IndexPath(row: from, section: 0)), to: indexPathTransform(IndexPath(row: to, section: 0)))
                 default: return nil
                 }
             }

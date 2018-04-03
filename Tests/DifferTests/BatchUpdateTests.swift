@@ -12,19 +12,19 @@ class BatchUpdateTests: XCTestCase {
         let orderAfter: [Int]
         let insertions: [IndexPath]
         let deletions: [IndexPath]
-        let moves: [(from: IndexPath, to: IndexPath)]
+        let moves: [BatchUpdate.MoveStep]
     }
 
     private let cellExpectations: [Expectation] = [
         Expectation(orderBefore: [1, 2, 3, 4], orderAfter: [1, 2, 3, 4], insertions: [], deletions: [], moves: []),
-        Expectation(orderBefore: [1, 2, 3, 4], orderAfter: [4, 2, 3, 1], insertions: [], deletions: [], moves: [(IP(0, 0), IP(3, 0)), (IP(3, 0), IP(0, 0))]),
-        Expectation(orderBefore: [1, 2, 3, 4], orderAfter: [2, 3, 1], insertions: [IP(3, 0)], deletions: [], moves: [(IP(0, 0), IP(2, 0))]),
+        Expectation(orderBefore: [1, 2, 3, 4], orderAfter: [4, 2, 3, 1], insertions: [], deletions: [], moves: [BatchUpdate.MoveStep(from: IP(0, 0), to: IP(3, 0)), BatchUpdate.MoveStep(from: IP(3, 0), to: IP(0, 0))]),
+        Expectation(orderBefore: [1, 2, 3, 4], orderAfter: [2, 3, 1], insertions: [], deletions: [IP(3, 0)], moves: [BatchUpdate.MoveStep(from: IP(0, 0), to: IP(2, 0))]),
         Expectation(orderBefore: [1, 2, 3, 4], orderAfter: [5, 2, 3, 4], insertions: [IP(0, 0)], deletions: [IP(0, 0)], moves: []),
-        Expectation(orderBefore: [1, 2, 3, 4], orderAfter: [4, 1, 3, 5], insertions: [IP(1, 0)], deletions: [IP(3, 0)], moves: [(IP(2, 0), IP(0, 0))]),
+        Expectation(orderBefore: [1, 2, 3, 4], orderAfter: [4, 1, 3, 5], insertions: [IP(3, 0)], deletions: [IP(1, 0)], moves: [BatchUpdate.MoveStep(from:IP(2, 0), to: IP(0, 0))]),
         Expectation(orderBefore: [1, 2, 3, 4], orderAfter: [4, 2, 3, 4], insertions: [IP(0, 0)], deletions: [IP(0, 0)], moves: []),
-        Expectation(orderBefore: [1, 2, 3, 4], orderAfter: [1, 2, 4, 4], insertions: [IP(2, 0)], deletions: [IP(3, 0)], moves: []),
+        Expectation(orderBefore: [1, 2, 3, 4], orderAfter: [1, 2, 4, 4], insertions: [IP(3, 0)], deletions: [IP(2, 0)], moves: []),
         Expectation(orderBefore: [1, 2, 3, 4], orderAfter: [5, 6, 7, 8], insertions: [IP(0, 0), IP(1, 0), IP(2, 0), IP(3, 0)], deletions: [IP(0, 0), IP(1, 0), IP(2, 0), IP(3, 0)], moves: []),
-        Expectation(orderBefore: [1, 2, 3, 4], orderAfter: [5, 6, 7, 1], insertions: [IP(1, 0), IP(2, 0), IP(3, 0)], deletions: [IP(0, 0), IP(1, 0), IP(2, 0)], moves: [])
+        Expectation(orderBefore: [1, 2, 3, 4], orderAfter: [5, 6, 7, 1], insertions: [IP(0, 0), IP(1, 0), IP(2, 0)], deletions: [IP(1, 0), IP(2, 0), IP(3, 0)], moves: [])
     ]
 
     func testCells() {
@@ -51,7 +51,7 @@ class BatchUpdateTests: XCTestCase {
             let batch = BatchUpdate(diff: expectation.orderBefore.extendedDiff(expectation.orderAfter), indexPathTransform: transform)
             XCTAssertEqual(batch.deletions, expectation.deletions.map(transform))
             XCTAssertEqual(batch.insertions, expectation.insertions.map(transform))
-            XCTAssertEqual(batch.moves, expectation.moves.map { (transform($0.0), transform($0.1)) })
+            XCTAssertEqual(batch.moves, expectation.moves.map { BatchUpdate.MoveStep(from: transform($0.from), to: transform($0.to)) })
         }
     }
 }
