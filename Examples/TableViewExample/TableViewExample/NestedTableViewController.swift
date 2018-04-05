@@ -43,6 +43,7 @@ class NestedTableViewController: UITableViewController {
                 elements: [
                     "👋🏻",
                     "🎁",
+                    "😊",
                 ],
                 key: "Second"
             ),
@@ -52,13 +53,13 @@ class NestedTableViewController: UITableViewController {
                 elements: [
                     "🎁",
                     "👋🏻",
+                    "🐩",
                 ],
                 key: "Second"
             ),
             StringArray(
                 elements: [
                     "🌞",
-                    "🐩",
                 ],
                 key: "First"
             ),

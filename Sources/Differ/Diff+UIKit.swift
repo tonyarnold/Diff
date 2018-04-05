@@ -148,7 +148,10 @@
             beginUpdates()
             deleteRows(at: update.deletions, with: deletionAnimation)
             insertRows(at: update.insertions, with: insertionAnimation)
-            update.moves.forEach { moveRow(at: $0.from, to: $0.to) }
+            update.moves.forEach {
+                deleteRows(at: [$0.from], with: deletionAnimation)
+                insertRows(at: [$0.to], with: insertionAnimation)
+            }
             endUpdates()
         }
 
@@ -320,10 +323,16 @@
             beginUpdates()
             deleteRows(at: update.itemDeletions, with: rowDeletionAnimation)
             insertRows(at: update.itemInsertions, with: rowInsertionAnimation)
-            update.itemMoves.forEach { moveRow(at: $0.from, to: $0.to) }
+            update.itemMoves.forEach {
+                deleteRows(at: [$0.from], with: rowDeletionAnimation)
+                insertRows(at: [$0.to], with: rowInsertionAnimation)
+            }
             deleteSections(update.sectionDeletions, with: sectionDeletionAnimation)
             insertSections(update.sectionInsertions, with: sectionInsertionAnimation)
-            update.sectionMoves.forEach { moveSection($0.from, toSection: $0.to) }
+            update.sectionMoves.forEach {
+                deleteSections([$0.from], with: sectionDeletionAnimation)
+                insertSections([$0.to], with: sectionInsertionAnimation)
+            }
             endUpdates()
         }
     }
