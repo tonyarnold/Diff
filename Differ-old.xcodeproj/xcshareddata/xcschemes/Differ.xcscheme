@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0940"
+   LastUpgradeVersion = "0930"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D04371EF20E29DB100A49A53"
+               BlueprintIdentifier = "C9EE87151CCFCA83006BD90E"
                BuildableName = "Differ.framework"
                BlueprintName = "Differ"
                ReferencedContainer = "container:Differ.xcodeproj">
@@ -28,7 +28,26 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C9838FF01D29571000691BE8"
+               BuildableName = "DifferTests.xctest"
+               BlueprintName = "DifferTests"
+               ReferencedContainer = "container:Differ.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "C9EE87151CCFCA83006BD90E"
+            BuildableName = "Differ.framework"
+            BlueprintName = "Differ"
+            ReferencedContainer = "container:Differ.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -45,7 +64,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D04371EF20E29DB100A49A53"
+            BlueprintIdentifier = "C9EE87151CCFCA83006BD90E"
             BuildableName = "Differ.framework"
             BlueprintName = "Differ"
             ReferencedContainer = "container:Differ.xcodeproj">
@@ -63,7 +82,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D04371EF20E29DB100A49A53"
+            BlueprintIdentifier = "C9EE87151CCFCA83006BD90E"
             BuildableName = "Differ.framework"
             BlueprintName = "Differ"
             ReferencedContainer = "container:Differ.xcodeproj">
