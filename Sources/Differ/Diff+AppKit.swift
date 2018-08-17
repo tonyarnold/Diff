@@ -46,7 +46,7 @@ extension NSTableView {
         deletionAnimation: NSTableView.AnimationOptions = [],
         insertionAnimation: NSTableView.AnimationOptions = [],
         indexPathTransform: (IndexPath) -> IndexPath = { $0 }
-    ) where T.Iterator.Element: Equatable {
+    ) where T.Element: Equatable {
         apply(
             oldData.extendedDiff(newData),
             deletionAnimation: deletionAnimation,
@@ -110,7 +110,7 @@ public extension NSCollectionView {
         newData: T,
         indexPathTransform: @escaping (IndexPath) -> IndexPath = { $0 },
         completion: ((Bool) -> Void)? = nil
-        ) where T.Iterator.Element: Equatable {
+        ) where T.Element: Equatable {
         let diff = oldData.extendedDiff(newData)
         apply(diff, completion: completion, indexPathTransform: indexPathTransform)
     }
@@ -163,9 +163,9 @@ public extension NSCollectionView {
         sectionTransform: @escaping (Int) -> Int = { $0 },
         completion: ((Bool) -> Swift.Void)? = nil
         )
-        where T.Iterator.Element: Collection,
-        T.Iterator.Element: Equatable,
-        T.Iterator.Element.Iterator.Element: Equatable {
+        where T.Element: Collection,
+        T.Element: Equatable,
+        T.Element.Element: Equatable {
             self.apply(
                 oldData.nestedExtendedDiff(to: newData),
                 indexPathTransform: indexPathTransform,
@@ -179,7 +179,7 @@ public extension NSCollectionView {
     /// - Parameters:
     ///   - oldData:            Data which reflects the previous state of `UICollectionView`
     ///   - newData:            Data which reflects the current state of `UICollectionView`
-    ///   - isEqualElement:     A function comparing two items (elements of `T.Iterator.Element`)
+    ///   - isEqualElement:     A function comparing two items (elements of `T.Element`)
     ///   - indexPathTransform: Closure which transforms zero-based `IndexPath` to desired  `IndexPath`
     ///   - sectionTransform:   Closure which transforms zero-based section(`Int`) into desired section(`Int`)
     ///   - completion:         Closure to be executed when the animation completes
@@ -191,8 +191,8 @@ public extension NSCollectionView {
         sectionTransform: @escaping (Int) -> Int = { $0 },
         completion: ((Bool) -> Swift.Void)? = nil
         )
-        where T.Iterator.Element: Collection,
-        T.Iterator.Element: Equatable {
+        where T.Element: Collection,
+        T.Element: Equatable {
             self.apply(
                 oldData.nestedExtendedDiff(
                     to: newData,
@@ -221,8 +221,8 @@ public extension NSCollectionView {
         sectionTransform: @escaping (Int) -> Int = { $0 },
         completion: ((Bool) -> Swift.Void)? = nil
         )
-        where T.Iterator.Element: Collection,
-        T.Iterator.Element.Iterator.Element: Equatable {
+        where T.Element: Collection,
+        T.Element.Element: Equatable {
             self.apply(
                 oldData.nestedExtendedDiff(
                     to: newData,
@@ -240,7 +240,7 @@ public extension NSCollectionView {
     ///   - oldData:            Data which reflects the previous state of `UICollectionView`
     ///   - newData:            Data which reflects the current state of `UICollectionView`
     ///   - isEqualSection:     A function comparing two sections (elements of `T`)
-    ///   - isEqualElement:     A function comparing two items (elements of `T.Iterator.Element`)
+    ///   - isEqualElement:     A function comparing two items (elements of `T.Element`)
     ///   - indexPathTransform: Closure which transforms zero-based `IndexPath` to desired  `IndexPath`
     ///   - sectionTransform:   Closure which transforms zero-based section(`Int`) into desired section(`Int`)
     ///   - completion:         Closure to be executed when the animation completes
@@ -253,7 +253,7 @@ public extension NSCollectionView {
         sectionTransform: @escaping (Int) -> Int = { $0 },
         completion: ((Bool) -> Swift.Void)? = nil
         )
-        where T.Iterator.Element: Collection {
+        where T.Element: Collection {
             self.apply(
                 oldData.nestedExtendedDiff(
                     to: newData,

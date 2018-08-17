@@ -195,7 +195,7 @@ class NestedDiffTests: XCTestCase {
         to: [T]) -> String
         where
         T: Equatable,
-        T.Iterator.Element: Equatable {
+        T.Element: Equatable {
         return from
             .nestedDiff(to: to)
             .reduce("") { $0 + $1.debugDescription }

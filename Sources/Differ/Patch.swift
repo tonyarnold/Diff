@@ -28,7 +28,7 @@ public extension Diff {
     public func patch<T: Collection>(
         from: T,
         to: T
-    ) -> [Patch<T.Iterator.Element>] {
+    ) -> [Patch<T.Element>] {
         var shift = 0
         return map { element in
             switch element {
@@ -54,7 +54,7 @@ public extension Diff {
 public func patch<T: Collection>(
     from: T,
     to: T
-) -> [Patch<T.Iterator.Element>] where T.Iterator.Element: Equatable {
+) -> [Patch<T.Element>] where T.Element: Equatable {
     return from.diff(to).patch(from: from, to: to)
 }
 

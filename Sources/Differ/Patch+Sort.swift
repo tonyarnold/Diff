@@ -11,7 +11,7 @@ public func patch<T: Collection>(
     from: T,
     to: T,
     sort: Diff.OrderedBefore
-) -> [Patch<T.Iterator.Element>] where T.Iterator.Element: Equatable {
+) -> [Patch<T.Element>] where T.Element: Equatable {
     return from.diff(to).patch(from: from, to: to, sort: sort)
 }
 
@@ -32,7 +32,7 @@ public extension Diff {
         from: T,
         to: T,
         sort: OrderedBefore
-    ) -> [Patch<T.Iterator.Element>] {
+    ) -> [Patch<T.Element>] {
         let shiftedPatch = patch(from: from, to: to)
         return shiftedPatchElements(from: sortedPatchElements(
             from: shiftedPatch,

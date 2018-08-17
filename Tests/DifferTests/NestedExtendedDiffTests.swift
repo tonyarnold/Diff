@@ -159,9 +159,9 @@ class NestedExtendedDiffTests: XCTestCase {
     }
 
     func _test<T: Collection>(from: T, to: T) -> String
-        where T.Iterator.Element: Collection,
-        T.Iterator.Element: Equatable,
-        T.Iterator.Element.Iterator.Element: Equatable {
+        where T.Element: Collection,
+        T.Element: Equatable,
+        T.Element.Element: Equatable {
         return from
             .nestedExtendedDiff(to: to)
             .reduce("") { $0 + $1.debugDescription }

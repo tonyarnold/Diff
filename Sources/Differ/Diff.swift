@@ -98,7 +98,7 @@ extension Trace {
 }
 
 extension Array {
-    func value(at index: Index) -> Iterator.Element? {
+    func value(at index: Index) -> Element? {
         if index < 0 || index >= count {
             return nil
         }
@@ -113,7 +113,7 @@ struct TraceStep {
     let nextX: Int?
 }
 
-public typealias EqualityChecker<T: Collection> = (T.Iterator.Element, T.Iterator.Element) -> Bool
+public typealias EqualityChecker<T: Collection> = (T.Element, T.Element) -> Bool
 
 public extension Collection {
 
@@ -190,7 +190,7 @@ public extension Collection {
 
     fileprivate func myersDiffTraces(
         to: Self,
-        isEqual: (Iterator.Element, Iterator.Element) -> Bool
+        isEqual: (Element, Element) -> Bool
         ) -> [Trace] {
 
         // fromCount is N, N is the number of from array
@@ -309,7 +309,7 @@ public extension Collection {
     }
 }
 
-public extension Collection where Iterator.Element: Equatable {
+public extension Collection where Element: Equatable {
 
     /// - SeeAlso: `diff(_:isEqual:)`
     public func diff(

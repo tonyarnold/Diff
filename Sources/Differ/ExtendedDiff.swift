@@ -168,7 +168,7 @@ public extension Collection {
     }
 }
 
-public extension Collection where Iterator.Element: Equatable {
+public extension Collection where Element: Equatable {
 
     /// - SeeAlso: `extendedDiff(_:isEqual:)`
     public func extendedDiff(_ other: Self) -> ExtendedDiff {
@@ -177,7 +177,7 @@ public extension Collection where Iterator.Element: Equatable {
 }
 
 extension Collection {
-    func itemOnStartIndex(advancedBy n: Int) -> Iterator.Element {
+    func itemOnStartIndex(advancedBy n: Int) -> Element {
         return self[self.index(startIndex, offsetBy: n)]
     }
 }
