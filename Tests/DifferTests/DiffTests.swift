@@ -1,12 +1,6 @@
 import XCTest
 @testable import Differ
 
-extension Trace: Hashable {
-    public var hashValue: Int {
-        return (((51 + from.x.hashValue) * 51 + from.y.hashValue) * 51 + to.x.hashValue) * 51 + to.y.hashValue
-    }
-}
-
 class DiffTests: XCTestCase {
 
     let expectations = [

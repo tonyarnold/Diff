@@ -63,28 +63,16 @@ extension Diff.Element {
     }
 }
 
-public struct Point {
+public struct Point: Hashable {
     public let x: Int
     public let y: Int
 }
 
-extension Point: Equatable {}
-
-public func ==(l: Point, r: Point) -> Bool {
-    return (l.x == r.x) && (l.y == r.y)
-}
-
 /// A data structure representing single trace produced by the diff algorithm. See the [paper](http://www.xmailserver.org/diff2.pdf) for more information on traces.
-public struct Trace {
+public struct Trace: Hashable {
     public let from: Point
     public let to: Point
     public let D: Int
-}
-
-extension Trace: Equatable {
-    public static func ==(l: Trace, r: Trace) -> Bool {
-        return (l.from == r.from) && (l.to == r.to)
-    }
 }
 
 enum TraceType {
