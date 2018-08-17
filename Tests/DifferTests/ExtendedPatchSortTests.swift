@@ -93,6 +93,23 @@ class ExtendedPatchSortTests: XCTestCase {
             XCTAssertEqual(result, string2)
         }
     }
+    
+    func testBadPatch1() {
+        let old = [63, 5, 112, 48, 100006, 121, 33, 65, 100003, 57, 100007, 117, 108, 1, 118, 100688, 18, 54, 116, 110]
+        let new = [65, 118, 110, 117, 100006, 112, 1,  54, 116, 100688, 48, 57, 108, 63, 121, 33, 18, 5, 100003, 100007]
+        let patch = extendedPatch(from: old, to: new)
+        let result = old.apply(patch)
+        XCTAssertEqual(result, new)
+    }
+    
+    func testBadPatch2() {
+        let old = [63, 5,   112, 48,  1006, 121, 33, 65, 1003, 1007, 117, 108, 118, 1688, 18, 54, 116,    110]
+        let new = [65, 118, 110, 117, 1006, 112, 1, 54, 116, 1688, 48, 108, 63, 121, 33, 18, 5,  1003, 1007]
+        let patch = extendedPatch(from: old, to: new)
+        let result = old.apply(patch)
+        XCTAssertEqual(result, new)
+    }
+    
 }
 
 typealias ExtendedSortingFunction = (ExtendedDiff.Element, ExtendedDiff.Element) -> Bool
