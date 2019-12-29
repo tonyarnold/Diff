@@ -9,8 +9,7 @@ jobs:
     strategy:
       matrix:
         developer_dir: [
-          "/Applications/Xcode_10.3.app",
-          "/Applications/Xcode_11.app"
+          "/Applications/Xcode_11.3.app"
         ]
         destination: [
           "platform=macOS",
@@ -32,8 +31,7 @@ jobs:
     strategy:
       matrix:
         developer_dir: [
-          "/Applications/Xcode_10.3.app",
-          "/Applications/Xcode_11.app"
+          "/Applications/Xcode_11.3.app"
         ]
         destination: [
           "platform=macOS",
