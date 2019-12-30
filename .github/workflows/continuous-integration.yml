@@ -13,7 +13,7 @@ jobs:
         ]
         destination: [
           "platform=macOS",
-          "platform=iOS Simulator,name=iPhone Xs", 
+          "platform=iOS Simulator,name=iPhone 11", 
           "platform=tvOS Simulator,name=Apple TV",
           "platform=watchOS Simulator,name=Apple Watch Series 4 - 44mm"
         ]
@@ -35,7 +35,7 @@ jobs:
         ]
         destination: [
           "platform=macOS",
-          "platform=iOS Simulator,name=iPhone Xs", 
+          "platform=iOS Simulator,name=iPhone 11", 
           "platform=tvOS Simulator,name=Apple TV"
         ]
 
