@@ -1,4 +1,4 @@
-class LinkedList<T> {
+class LinkedList<T>: Sequence {
     let next: LinkedList?
     let value: T
 
@@ -23,15 +23,22 @@ class LinkedList<T> {
         value = first
     }
 
-    func array() -> Array<T> {
-        if let next = next {
-            return [value] + next.array()
-        }
-        return [value]
+    /// Non-consuming iterator.
+    func makeIterator() -> AnyIterator<T> {
+        var node = self as Optional
+
+        return AnyIterator({
+            if let unwrapped = node {
+                node = unwrapped.next
+                return unwrapped.value
+            } else {
+                return nil
+            }
+        })
     }
 }
 
-class DoublyLinkedList<T> {
+class DoublyLinkedList<T>: Sequence {
     let next: DoublyLinkedList?
     private(set) weak var previous: DoublyLinkedList?
     var head: DoublyLinkedList {
@@ -72,13 +79,34 @@ class DoublyLinkedList<T> {
         guard let linkedList = linkedList else {
             return nil
         }
-        self.init(array: linkedList.array())
+        self.init(array: Array(linkedList))
     }
 
-    func array() -> Array<T> {
-        if let next = next {
-            return [value] + next.array()
-        }
-        return [value]
+    /// Non-consuming iterator.
+    func makeIterator() -> AnyIterator<T> {
+        var node = self as Optional
+
+        return AnyIterator({
+            if let unwrapped = node {
+                node = unwrapped.next
+                return unwrapped.value
+            } else {
+                return nil
+            }
+        })
+    }
+
+    /// Non-consuming iterator.
+    func makeNodeIterator() -> AnyIterator<DoublyLinkedList<T>> {
+        var node = self as Optional
+
+        return AnyIterator({
+            if let unwrapped = node {
+                node = unwrapped.next
+                return unwrapped
+            } else {
+                return nil
+            }
+        })
     }
 }

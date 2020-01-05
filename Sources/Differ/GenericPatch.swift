@@ -34,15 +34,13 @@ func edgeType<T>(from: DoublyLinkedList<SortedPatchElement<T>>, to: DoublyLinked
     }
 }
 
-func shiftPatchElement<T>(node: DoublyLinkedList<SortedPatchElement<T>>) {
-    var from = node.previous
-    while let nextFrom = from, nextFrom.value.sourceIndex < node.value.sourceIndex {
-        shiftPatchElement(from: nextFrom, to: node)
-        from = nextFrom.previous
-    }
-
-    if let next = node.next {
-        shiftPatchElement(node: next)
+func shiftPatchElement<T>(node list: DoublyLinkedList<SortedPatchElement<T>>) {
+    for node in list.makeNodeIterator() {
+        var from = node.previous
+        while let nextFrom = from, nextFrom.value.sourceIndex < node.value.sourceIndex {
+            shiftPatchElement(from: nextFrom, to: node)
+            from = nextFrom.previous
+        }
     }
 }
 
@@ -105,7 +103,7 @@ func shiftedPatchElements<T>(from sortedPatchElements: [SortedPatchElement<T>]) 
         shiftPatchElement(node: secondElement)
     }
 
-    guard let result = linkedList?.array().sorted(by: { (fst, second) -> Bool in
+    guard let result = linkedList?.sorted(by: { (fst, second) -> Bool in
         fst.sortedIndex < second.sortedIndex
     }) else {
         return []
