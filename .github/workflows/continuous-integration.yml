@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         developer_dir: [
-          "/Applications/Xcode_11.3.app"
+          "/Applications/Xcode_11.4.app"
         ]
         destination: [
           "platform=macOS",
@@ -31,7 +31,7 @@ jobs:
     strategy:
       matrix:
         developer_dir: [
-          "/Applications/Xcode_11.3.app"
+          "/Applications/Xcode_11.4.app"
         ]
         destination: [
           "platform=macOS",
@@ -54,7 +54,7 @@ jobs:
     strategy:
       matrix:
         developer_dir: [
-          "/Applications/Xcode_11.3.app"
+          "/Applications/Xcode_11.4.app"
         ]
 
     steps:
@@ -72,5 +72,5 @@ jobs:
     - uses: actions/checkout@v1
     - name: Lint CocoaPods specification
       env:
-        DEVELOPER_DIR: "/Applications/Xcode_11.3.app/Contents/Developer"
+        DEVELOPER_DIR: "/Applications/Xcode_11.4.app/Contents/Developer"
       run: pod lib lint
