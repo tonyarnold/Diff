@@ -250,11 +250,11 @@
 			};
 			buildConfigurationList = C9EE87101CCFCA83006BD90E /* Build configuration list for PBXProject "Differ" */;
 			compatibilityVersion = "Xcode 10.0";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				Base,
+				en,
 			);
 			mainGroup = C9EE870C1CCFCA83006BD90E;
 			productRefGroup = C9EE87171CCFCA83006BD90E /* Products */;
