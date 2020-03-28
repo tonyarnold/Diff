@@ -36,8 +36,8 @@ public struct NestedBatchUpdate {
                 sectionDeletions.insert(sectionTransform(at))
             case let .insertSection(at):
                 sectionInsertions.insert(sectionTransform(at))
-            case let .moveSection(move):
-                sectionMoves.append((sectionTransform(move.from), sectionTransform(move.to)))
+            case let .moveSection(moveFrom, moveTo):
+                sectionMoves.append((sectionTransform(moveFrom), sectionTransform(moveTo)))
             }
         }
 
