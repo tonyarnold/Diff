@@ -16,7 +16,7 @@ class BatchUpdateTests: XCTestCase {
 
     private let cellExpectations: [Expectation] = [
         Expectation(orderBefore: [1, 2, 3, 4], orderAfter: [1, 2, 3, 4], insertions: [], deletions: [], moves: []),
-        Expectation(orderBefore: [1, 2, 3, 4], orderAfter: [4, 2, 3, 1], insertions: [], deletions: [], moves: [BatchUpdate.MoveStep(from: IP(0, 0), to: IP(3, 0)), BatchUpdate.MoveStep(from: IP(3, 0), to: IP(0, 0))]),
+        Expectation(orderBefore: [1, 2, 3, 4], orderAfter: [4, 2, 3, 1], insertions: [], deletions: [], moves: [BatchUpdate.MoveStep(from: IP(3, 0), to: IP(0, 0)), BatchUpdate.MoveStep(from: IP(0, 0), to: IP(3, 0))]),
         Expectation(orderBefore: [1, 2, 3, 4], orderAfter: [3, 4, 1, 2], insertions: [], deletions: [], moves: [BatchUpdate.MoveStep(from: IP(1, 0), to: IP(3, 0)), BatchUpdate.MoveStep(from: IP(0, 0), to: IP(2, 0))]),
         Expectation(orderBefore: [1, 2, 3, 4], orderAfter: [2, 3, 1], insertions: [], deletions: [IP(3, 0)], moves: [BatchUpdate.MoveStep(from: IP(0, 0), to: IP(2, 0))]),
         Expectation(orderBefore: [1, 2, 3, 4], orderAfter: [5, 2, 3, 4], insertions: [IP(0, 0)], deletions: [IP(0, 0)], moves: []),
