@@ -24,7 +24,7 @@ public struct BatchUpdate {
             case let .move(from, to):
                 moves.append(MoveStep(from: indexPathTransform([0, from]), to: indexPathTransform([0, to])))
             }
-            return (deletions, insertions, moves)
+            return (deletions, insertions, moves.reversed())
         })
     }
 }
