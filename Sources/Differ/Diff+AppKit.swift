@@ -10,13 +10,77 @@ extension NSTableView {
     ///   - newData:            Data which reflects the current state of `NSTableView`
     ///   - deletionAnimation:  Animation type for deletions
     ///   - insertionAnimation: Animation type for insertions
-    ///   - indexPathTransform: Closure which transforms zero-based `IndexPath` to desired `IndexPath`
+    ///   - rowIndexTransform:  Closure which transforms a zero-based row to the desired index
     public func animateRowChanges<T: Collection>(
         oldData: T,
         newData: T,
         deletionAnimation: NSTableView.AnimationOptions = [],
         insertionAnimation: NSTableView.AnimationOptions = [],
-        indexPathTransform: (IndexPath) -> IndexPath = { $0 }
+        rowIndexTransform: (Int) -> Int = { $0 }
+    ) where T.Element: Equatable {
+        let patch = extendedPatch(from: oldData, to: newData)
+        apply(patch, deletionAnimation: deletionAnimation, insertionAnimation: insertionAnimation, rowIndexTransform: rowIndexTransform)
+    }
+
+    /// Animates rows which changed between oldData and newData using custom `isEqual`.
+    ///
+    /// - Parameters:
+    ///   - oldData:            Data which reflects the previous state of `NSTableView`
+    ///   - newData:            Data which reflects the current state of `NSTableView`
+    ///   - isEqual:            A function comparing two elements of `T`
+    ///   - deletionAnimation:  Animation type for deletions
+    ///   - insertionAnimation: Animation type for insertions
+    ///   - rowIndexTransform:  Closure which transforms a zero-based row to the desired index
+    public func animateRowChanges<T: Collection>(
+        oldData: T,
+        newData: T,
+        isEqual: EqualityChecker<T>,
+        deletionAnimation: NSTableView.AnimationOptions = [],
+        insertionAnimation: NSTableView.AnimationOptions = [],
+        rowIndexTransform: (Int) -> Int = { $0 }
+    ) {
+        withoutActuallyEscaping(isEqual) { isEqual in
+            func wrap(_ wrapped: T.Element) -> CustomEquatable<T> { CustomEquatable(isEqual: isEqual, wrapped: wrapped) }
+
+            animateRowChanges(oldData: oldData.map(wrap), newData: newData.map(wrap), deletionAnimation: deletionAnimation, insertionAnimation: insertionAnimation, rowIndexTransform: rowIndexTransform)
+        }
+    }
+
+    /// Animates a series of patches in a single beginUpdates/endUpdates batch.
+    /// - Parameters:
+    ///   - patches: A series of patches to apply
+    ///   - deletionAnimation: Animation type for deletions
+    ///   - insertionAnimation: Animation type for insertions
+    ///   - rowIndexTransform: Closure which transforms a zero-based row to the desired index
+    public func apply<T: Equatable>(
+        _ patches: [ExtendedPatch<T>],
+        deletionAnimation: NSTableView.AnimationOptions = [],
+        insertionAnimation: NSTableView.AnimationOptions = [],
+        rowIndexTransform: (Int) -> Int = { $0 }
+    ){
+        guard !patches.isEmpty else { return }
+
+        beginUpdates()
+        for patch in patches {
+            switch patch {
+            case .insertion(index: let index, element: _):
+                insertRows(at: .init(integer: rowIndexTransform(index)), withAnimation: insertionAnimation)
+            case .deletion(index: let index):
+                removeRows(at: .init(integer: rowIndexTransform(index)), withAnimation: deletionAnimation)
+            case .move(from: let from, to: let to):
+                moveRow(at: rowIndexTransform(from), to: rowIndexTransform(to))
+            }
+        }
+        endUpdates()
+    }
+
+    @available(*, deprecated, message: "Use `animateRowChanges(…rowIndexTransform:)`instead. Deprecated because it has errors animating multiple moves.")
+    public func animateRowChanges<T: Collection>(
+        oldData: T,
+        newData: T,
+        deletionAnimation: NSTableView.AnimationOptions = [],
+        insertionAnimation: NSTableView.AnimationOptions = [],
+        indexPathTransform: (IndexPath) -> IndexPath
     ) where T.Element: Equatable {
         apply(
             oldData.extendedDiff(newData),
@@ -26,22 +90,14 @@ extension NSTableView {
         )
     }
 
-    /// Animates rows which changed between oldData and newData.
-    ///
-    /// - Parameters:
-    ///   - oldData:            Data which reflects the previous state of `NSTableView`
-    ///   - newData:            Data which reflects the current state of `NSTableView`
-    ///   - isEqual:            A function comparing two elements of `T`
-    ///   - deletionAnimation:  Animation type for deletions
-    ///   - insertionAnimation: Animation type for insertions
-    ///   - indexPathTransform: Closure which transforms zero-based `IndexPath` to desired `IndexPath`
+    @available(*, deprecated, message: "Use `animateRowChanges(…rowIndexTransform:)`instead. Deprecated because it has errors animating multiple moves.")
     public func animateRowChanges<T: Collection>(
         oldData: T,
         newData: T,
         isEqual: EqualityChecker<T>,
         deletionAnimation: NSTableView.AnimationOptions = [],
         insertionAnimation: NSTableView.AnimationOptions = [],
-        indexPathTransform: (IndexPath) -> IndexPath = { $0 }
+        indexPathTransform: (IndexPath) -> IndexPath
     ) {
         apply(
             oldData.extendedDiff(newData, isEqual: isEqual),
@@ -51,11 +107,12 @@ extension NSTableView {
         )
     }
 
+    @available(*, deprecated, message: "Use `apply(_ patches: …)` based on `ExtendedPatch` instead. Deprecated because it has errors animating multiple moves.")
     public func apply(
         _ diff: ExtendedDiff,
         deletionAnimation: NSTableView.AnimationOptions = [],
         insertionAnimation: NSTableView.AnimationOptions = [],
-        indexPathTransform: (IndexPath) -> IndexPath = { $0 }
+        indexPathTransform: (IndexPath) -> IndexPath
     ) {
         let update = BatchUpdate(diff: diff, indexPathTransform: indexPathTransform)
 
@@ -257,3 +314,10 @@ public extension NSCollectionView {
 }
 
 #endif
+
+private struct CustomEquatable<T: Collection>: Equatable {
+    let isEqual: EqualityChecker<T>
+    let wrapped: T.Element
+
+    static func == (lhs: CustomEquatable, rhs: CustomEquatable) -> Bool { lhs.isEqual(lhs.wrapped, rhs.wrapped) }
+}
