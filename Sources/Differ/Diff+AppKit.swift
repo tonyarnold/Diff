@@ -1,26 +1,9 @@
 #if canImport(AppKit) && !targetEnvironment(macCatalyst)
 import AppKit
 
-extension NSTableView {
+// MARK: - NSTableView
 
-    /// Animates rows which changed between oldData and newData.
-    ///
-    /// - Parameters:
-    ///   - oldData:            Data which reflects the previous state of `NSTableView`
-    ///   - newData:            Data which reflects the current state of `NSTableView`
-    ///   - deletionAnimation:  Animation type for deletions
-    ///   - insertionAnimation: Animation type for insertions
-    ///   - rowIndexTransform:  Closure which transforms a zero-based row to the desired index
-    public func animateRowChanges<T: Collection>(
-        oldData: T,
-        newData: T,
-        deletionAnimation: NSTableView.AnimationOptions = [],
-        insertionAnimation: NSTableView.AnimationOptions = [],
-        rowIndexTransform: (Int) -> Int = { $0 }
-    ) where T.Element: Equatable {
-        let patch = extendedPatch(from: oldData, to: newData)
-        apply(patch, deletionAnimation: deletionAnimation, insertionAnimation: insertionAnimation, rowIndexTransform: rowIndexTransform)
-    }
+extension NSTableView {
 
     /// Animates rows which changed between oldData and newData using custom `isEqual`.
     ///
@@ -39,11 +22,35 @@ extension NSTableView {
         insertionAnimation: NSTableView.AnimationOptions = [],
         rowIndexTransform: (Int) -> Int = { $0 }
     ) {
-        withoutActuallyEscaping(isEqual) { isEqual in
-            func wrap(_ wrapped: T.Element) -> CustomEquatable<T> { CustomEquatable(isEqual: isEqual, wrapped: wrapped) }
+        apply(
+            oldData.extendedDiff(newData, isEqual: isEqual).patch(from: oldData, to: newData),
+            deletionAnimation: deletionAnimation,
+            insertionAnimation: insertionAnimation,
+            rowIndexTransform: rowIndexTransform
+        )
+    }
 
-            animateRowChanges(oldData: oldData.map(wrap), newData: newData.map(wrap), deletionAnimation: deletionAnimation, insertionAnimation: insertionAnimation, rowIndexTransform: rowIndexTransform)
-        }
+    /// Animates rows which changed between oldData and newData.
+    ///
+    /// - Parameters:
+    ///   - oldData:            Data which reflects the previous state of `NSTableView`
+    ///   - newData:            Data which reflects the current state of `NSTableView`
+    ///   - deletionAnimation:  Animation type for deletions
+    ///   - insertionAnimation: Animation type for insertions
+    ///   - rowIndexTransform:  Closure which transforms a zero-based row to the desired index
+    public func animateRowChanges<T: Collection>(
+        oldData: T,
+        newData: T,
+        deletionAnimation: NSTableView.AnimationOptions = [],
+        insertionAnimation: NSTableView.AnimationOptions = [],
+        rowIndexTransform: (Int) -> Int = { $0 }
+    ) where T.Element: Equatable {
+        apply(
+            extendedPatch(from: oldData, to: newData),
+            deletionAnimation: deletionAnimation,
+            insertionAnimation: insertionAnimation,
+            rowIndexTransform: rowIndexTransform
+        )
     }
 
     /// Animates a series of patches in a single beginUpdates/endUpdates batch.
@@ -52,12 +59,12 @@ extension NSTableView {
     ///   - deletionAnimation: Animation type for deletions
     ///   - insertionAnimation: Animation type for insertions
     ///   - rowIndexTransform: Closure which transforms a zero-based row to the desired index
-    public func apply<T: Equatable>(
+    public func apply<T>(
         _ patches: [ExtendedPatch<T>],
         deletionAnimation: NSTableView.AnimationOptions = [],
         insertionAnimation: NSTableView.AnimationOptions = [],
         rowIndexTransform: (Int) -> Int = { $0 }
-    ){
+    ) {
         beginUpdates()
         for patch in patches {
             switch patch {
@@ -72,23 +79,18 @@ extension NSTableView {
         endUpdates()
     }
 
-    @available(*, deprecated, message: "Use `animateRowChanges(…rowIndexTransform:)`instead. Deprecated because it has errors animating multiple moves.")
-    public func animateRowChanges<T: Collection>(
-        oldData: T,
-        newData: T,
-        deletionAnimation: NSTableView.AnimationOptions = [],
-        insertionAnimation: NSTableView.AnimationOptions = [],
-        indexPathTransform: (IndexPath) -> IndexPath
-    ) where T.Element: Equatable {
-        apply(
-            oldData.extendedDiff(newData),
-            deletionAnimation: deletionAnimation,
-            insertionAnimation: insertionAnimation,
-            indexPathTransform: indexPathTransform
-        )
-    }
+    // MARK: Deprecated
 
-    @available(*, deprecated, message: "Use `animateRowChanges(…rowIndexTransform:)`instead. Deprecated because it has errors animating multiple moves.")
+    /// Animates rows which changed between oldData and newData.
+    ///
+    /// - Parameters:
+    ///   - oldData:            Data which reflects the previous state of `NSTableView`
+    ///   - newData:            Data which reflects the current state of `NSTableView`
+    ///   - isEqual:            A function comparing two elements of `T`
+    ///   - deletionAnimation:  Animation type for deletions
+    ///   - insertionAnimation: Animation type for insertions
+    ///   - indexPathTransform: Closure which transforms zero-based `IndexPath` to desired `IndexPath`. Only the `.item` is used, not the `.section`.
+    @available(*, deprecated, message: "Use `animateRowChanges(…rowIndexTransform:)`instead. Deprecated because indexPaths are not used in `NSTableView` rows, just Integer row indices.")
     public func animateRowChanges<T: Collection>(
         oldData: T,
         newData: T,
@@ -97,11 +99,38 @@ extension NSTableView {
         insertionAnimation: NSTableView.AnimationOptions = [],
         indexPathTransform: (IndexPath) -> IndexPath
     ) {
-        apply(
-            oldData.extendedDiff(newData, isEqual: isEqual),
+        animateRowChanges(
+            oldData: oldData,
+            newData: newData,
+            isEqual: isEqual,
             deletionAnimation: deletionAnimation,
             insertionAnimation: insertionAnimation,
-            indexPathTransform: indexPathTransform
+            rowIndexTransform: { indexPathTransform(.init(item: $0, section: 0)).item }
+        )
+    }
+
+    /// Animates rows which changed between oldData and newData.
+    ///
+    /// - Parameters:
+    ///   - oldData:            Data which reflects the previous state of `NSTableView`
+    ///   - newData:            Data which reflects the current state of `NSTableView`
+    ///   - deletionAnimation:  Animation type for deletions
+    ///   - insertionAnimation: Animation type for insertions
+    ///   - indexPathTransform: Closure which transforms zero-based `IndexPath` to desired `IndexPath`. Only the `.item` is used, not the `.section`.
+    @available(*, deprecated, message: "Use `animateRowChanges(…rowIndexTransform:)`instead. Deprecated because indexPaths are not used in `NSTableView` rows, just Integer row indices.")
+    public func animateRowChanges<T: Collection>(
+        oldData: T,
+        newData: T,
+        deletionAnimation: NSTableView.AnimationOptions = [],
+        insertionAnimation: NSTableView.AnimationOptions = [],
+        indexPathTransform: (IndexPath) -> IndexPath
+    ) where T.Element: Equatable {
+        animateRowChanges(
+            oldData: oldData,
+            newData: newData,
+            deletionAnimation: deletionAnimation,
+            insertionAnimation: insertionAnimation,
+            rowIndexTransform: { indexPathTransform(.init(item: $0, section: 0)).item }
         )
     }
 
@@ -121,6 +150,8 @@ extension NSTableView {
         endUpdates()
     }
 }
+
+// MARK: - NSCollectionView
 
 @available(macOS 10.11, *)
 public extension NSCollectionView {
@@ -312,10 +343,3 @@ public extension NSCollectionView {
 }
 
 #endif
-
-private struct CustomEquatable<T: Collection>: Equatable {
-    let isEqual: EqualityChecker<T>
-    let wrapped: T.Element
-
-    static func == (lhs: CustomEquatable, rhs: CustomEquatable) -> Bool { lhs.isEqual(lhs.wrapped, rhs.wrapped) }
-}
