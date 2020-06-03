@@ -58,8 +58,6 @@ extension NSTableView {
         insertionAnimation: NSTableView.AnimationOptions = [],
         rowIndexTransform: (Int) -> Int = { $0 }
     ){
-        guard !patches.isEmpty else { return }
-
         beginUpdates()
         for patch in patches {
             switch patch {
