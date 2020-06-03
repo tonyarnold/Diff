@@ -110,7 +110,7 @@ extension NSTableView {
         _ diff: ExtendedDiff,
         deletionAnimation: NSTableView.AnimationOptions = [],
         insertionAnimation: NSTableView.AnimationOptions = [],
-        indexPathTransform: (IndexPath) -> IndexPath
+        indexPathTransform: (IndexPath) -> IndexPath = { $0 }
     ) {
         let update = BatchUpdate(diff: diff, indexPathTransform: indexPathTransform)
 
