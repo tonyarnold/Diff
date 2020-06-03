@@ -62,8 +62,6 @@ public extension UITableView {
         insertionAnimation: DiffRowAnimation = .automatic,
         indexPathTransform: (IndexPath) -> IndexPath = { $0 }
     ) {
-        guard !diff.isEmpty else { return }
-
         let update = BatchUpdate(diff: diff, indexPathTransform: indexPathTransform)
 
         beginUpdates()
@@ -236,8 +234,6 @@ public extension UITableView {
         indexPathTransform: (IndexPath) -> IndexPath,
         sectionTransform: (Int) -> Int
     ) {
-        guard !diff.isEmpty else { return }
-
         let update = NestedBatchUpdate(diff: diff, indexPathTransform: indexPathTransform, sectionTransform: sectionTransform)
         beginUpdates()
         deleteRows(at: update.itemDeletions, with: rowDeletionAnimation)
