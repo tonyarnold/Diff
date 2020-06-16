@@ -1,35 +1,8 @@
 #if canImport(AppKit) && !targetEnvironment(macCatalyst)
 import AppKit
 
-// MARK: - NSTableView
-
 extension NSTableView {
 
-    /// Animates rows which changed between oldData and newData using custom `isEqual`.
-    ///
-    /// - Parameters:
-    ///   - oldData:            Data which reflects the previous state of `NSTableView`
-    ///   - newData:            Data which reflects the current state of `NSTableView`
-    ///   - isEqual:            A function comparing two elements of `T`
-    ///   - deletionAnimation:  Animation type for deletions
-    ///   - insertionAnimation: Animation type for insertions
-    ///   - rowIndexTransform:  Closure which transforms a zero-based row to the desired index
-    public func animateRowChanges<T: Collection>(
-        oldData: T,
-        newData: T,
-        isEqual: EqualityChecker<T>,
-        deletionAnimation: NSTableView.AnimationOptions = [],
-        insertionAnimation: NSTableView.AnimationOptions = [],
-        rowIndexTransform: (Int) -> Int = { $0 }
-    ) {
-        apply(
-            oldData.extendedDiff(newData, isEqual: isEqual).patch(from: oldData, to: newData),
-            deletionAnimation: deletionAnimation,
-            insertionAnimation: insertionAnimation,
-            rowIndexTransform: rowIndexTransform
-        )
-    }
-
     /// Animates rows which changed between oldData and newData.
     ///
     /// - Parameters:
@@ -37,49 +10,21 @@ extension NSTableView {
     ///   - newData:            Data which reflects the current state of `NSTableView`
     ///   - deletionAnimation:  Animation type for deletions
     ///   - insertionAnimation: Animation type for insertions
-    ///   - rowIndexTransform:  Closure which transforms a zero-based row to the desired index
+    ///   - indexPathTransform: Closure which transforms zero-based `IndexPath` to desired `IndexPath`
     public func animateRowChanges<T: Collection>(
         oldData: T,
         newData: T,
         deletionAnimation: NSTableView.AnimationOptions = [],
         insertionAnimation: NSTableView.AnimationOptions = [],
-        rowIndexTransform: (Int) -> Int = { $0 }
+        indexPathTransform: (IndexPath) -> IndexPath = { $0 }
     ) where T.Element: Equatable {
         apply(
-            extendedPatch(from: oldData, to: newData),
+            oldData.extendedDiff(newData),
             deletionAnimation: deletionAnimation,
             insertionAnimation: insertionAnimation,
-            rowIndexTransform: rowIndexTransform
+            indexPathTransform: indexPathTransform
         )
     }
-
-    /// Animates a series of patches in a single beginUpdates/endUpdates batch.
-    /// - Parameters:
-    ///   - patches: A series of patches to apply
-    ///   - deletionAnimation: Animation type for deletions
-    ///   - insertionAnimation: Animation type for insertions
-    ///   - rowIndexTransform: Closure which transforms a zero-based row to the desired index
-    public func apply<T>(
-        _ patches: [ExtendedPatch<T>],
-        deletionAnimation: NSTableView.AnimationOptions = [],
-        insertionAnimation: NSTableView.AnimationOptions = [],
-        rowIndexTransform: (Int) -> Int = { $0 }
-    ) {
-        beginUpdates()
-        for patch in patches {
-            switch patch {
-            case .insertion(index: let index, element: _):
-                insertRows(at: .init(integer: rowIndexTransform(index)), withAnimation: insertionAnimation)
-            case .deletion(index: let index):
-                removeRows(at: .init(integer: rowIndexTransform(index)), withAnimation: deletionAnimation)
-            case .move(from: let from, to: let to):
-                moveRow(at: rowIndexTransform(from), to: rowIndexTransform(to))
-            }
-        }
-        endUpdates()
-    }
-
-    // MARK: Deprecated
 
     /// Animates rows which changed between oldData and newData.
     ///
@@ -89,52 +34,23 @@ extension NSTableView {
     ///   - isEqual:            A function comparing two elements of `T`
     ///   - deletionAnimation:  Animation type for deletions
     ///   - insertionAnimation: Animation type for insertions
-    ///   - indexPathTransform: Closure which transforms zero-based `IndexPath` to desired `IndexPath`. Only the `.item` is used, not the `.section`.
-    @available(*, deprecated, message: "Use `animateRowChanges(…rowIndexTransform:)`instead. Deprecated because indexPaths are not used in `NSTableView` rows, just Integer row indices.")
+    ///   - indexPathTransform: Closure which transforms zero-based `IndexPath` to desired `IndexPath`
     public func animateRowChanges<T: Collection>(
         oldData: T,
         newData: T,
         isEqual: EqualityChecker<T>,
         deletionAnimation: NSTableView.AnimationOptions = [],
         insertionAnimation: NSTableView.AnimationOptions = [],
-        indexPathTransform: (IndexPath) -> IndexPath
+        indexPathTransform: (IndexPath) -> IndexPath = { $0 }
     ) {
-        animateRowChanges(
-            oldData: oldData,
-            newData: newData,
-            isEqual: isEqual,
+        apply(
+            oldData.extendedDiff(newData, isEqual: isEqual),
             deletionAnimation: deletionAnimation,
             insertionAnimation: insertionAnimation,
-            rowIndexTransform: { indexPathTransform(.init(item: $0, section: 0)).item }
+            indexPathTransform: indexPathTransform
         )
     }
 
-    /// Animates rows which changed between oldData and newData.
-    ///
-    /// - Parameters:
-    ///   - oldData:            Data which reflects the previous state of `NSTableView`
-    ///   - newData:            Data which reflects the current state of `NSTableView`
-    ///   - deletionAnimation:  Animation type for deletions
-    ///   - insertionAnimation: Animation type for insertions
-    ///   - indexPathTransform: Closure which transforms zero-based `IndexPath` to desired `IndexPath`. Only the `.item` is used, not the `.section`.
-    @available(*, deprecated, message: "Use `animateRowChanges(…rowIndexTransform:)`instead. Deprecated because indexPaths are not used in `NSTableView` rows, just Integer row indices.")
-    public func animateRowChanges<T: Collection>(
-        oldData: T,
-        newData: T,
-        deletionAnimation: NSTableView.AnimationOptions = [],
-        insertionAnimation: NSTableView.AnimationOptions = [],
-        indexPathTransform: (IndexPath) -> IndexPath
-    ) where T.Element: Equatable {
-        animateRowChanges(
-            oldData: oldData,
-            newData: newData,
-            deletionAnimation: deletionAnimation,
-            insertionAnimation: insertionAnimation,
-            rowIndexTransform: { indexPathTransform(.init(item: $0, section: 0)).item }
-        )
-    }
-
-    @available(*, deprecated, message: "Use `apply(_ patches: …)` based on `ExtendedPatch` instead. Deprecated because it has errors animating multiple moves.")
     public func apply(
         _ diff: ExtendedDiff,
         deletionAnimation: NSTableView.AnimationOptions = [],
@@ -150,8 +66,6 @@ extension NSTableView {
         endUpdates()
     }
 }
-
-// MARK: - NSCollectionView
 
 @available(macOS 10.11, *)
 public extension NSCollectionView {
