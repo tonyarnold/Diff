@@ -1,5 +1,5 @@
 SUPPORTED_PLATFORMS                 = macosx iphonesimulator iphoneos watchos watchsimulator appletvos appletvsimulator
-VALID_ARCHS[sdk=macosx*]            = i386 x86_64
+VALID_ARCHS[sdk=macosx*]            = i386 x86_64 arm64
 VALID_ARCHS[sdk=iphone*]            = arm64 armv7 armv7s
 VALID_ARCHS[sdk=iphonesimulator*]   = i386 x86_64
 VALID_ARCHS[sdk=watch*]             = armv7k
