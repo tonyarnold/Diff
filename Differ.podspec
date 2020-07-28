@@ -19,8 +19,8 @@ Also included are utilities for easily applying diffs and patches to `UICollecti
   s.source = { :git => "https://github.com/tonyarnold/Differ.git", :tag => "1.4.5" }
   s.source_files = "Sources/Differ"
 
-  s.platforms = { :ios => "8.0", :osx => "10.11", :tvos => "9.0", :watchos => "3.0" }
-  s.swift_versions = ['4.2', '5.0', '5.1', '5.2']
+  s.platforms = { :ios => "9.0", :osx => "10.12", :tvos => "9.0", :watchos => "4.0" }
+  s.swift_versions = ['5.2']
 
   s.ios.exclude_files = [
     "Sources/Differ/Diff+AppKit.swift"
