@@ -1,10 +1,10 @@
 name: Continuous Integration
 
-on: 
+on:
   pull_request:
     types: [opened, synchronize, reopened]
   push:
-    branches: [master]
+    branches: [main]
 
 jobs:
   xcode-build:
@@ -18,7 +18,7 @@ jobs:
         ]
         destination: [
           "platform=macOS",
-          "platform=iOS Simulator,name=iPhone 11", 
+          "platform=iOS Simulator,name=iPhone 11",
           "platform=tvOS Simulator,name=Apple TV",
           "platform=watchOS Simulator,name=Apple Watch Series 5 - 44mm"
         ]
@@ -41,7 +41,7 @@ jobs:
         ]
         destination: [
           "platform=macOS",
-          "platform=iOS Simulator,name=iPhone 11", 
+          "platform=iOS Simulator,name=iPhone 11",
           "platform=tvOS Simulator,name=Apple TV"
         ]
 
@@ -70,11 +70,11 @@ jobs:
       env:
         DEVELOPER_DIR: "${{ matrix.developer_dir }}/Contents/Developer"
       run: swift test
-      
+
   cocoapods-verify:
     name: CocoaPods
     runs-on: macOS-latest
-    
+
     steps:
     - uses: actions/checkout@v1
     - name: Lint CocoaPods specification

@@ -1,6 +1,6 @@
 # Differ
 
-[![Build Status](https://travis-ci.com/tonyarnold/Differ.svg?branch=master)](https://travis-ci.com/tonyarnold/Differ) [![codecov](https://codecov.io/gh/tonyarnold/Differ/branch/master/graph/badge.svg)](https://codecov.io/gh/tonyarnold/Differ)
+[![Build Status](https://travis-ci.com/tonyarnold/Differ.svg?branch=main)](https://travis-ci.com/tonyarnold/Differ) [![codecov](https://codecov.io/gh/tonyarnold/Differ/branch/main/graph/badge.svg)](https://codecov.io/gh/tonyarnold/Differ)
 
 Differ generates the differences between `Collection` instances (this includes Strings!).
 
